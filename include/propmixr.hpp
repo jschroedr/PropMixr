@@ -84,5 +84,5 @@ namespace PropMixr {
         }
 
         return detail::bake_internal<T>(*pantry, "");
-    }
+    };
 }

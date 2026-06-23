@@ -3,11 +3,19 @@ FROM gcc:latest
 
 # Install standard workspace and data backend dependencies
 RUN apt-get update && apt-get install -y \
+    build-essential \
     cmake \
     git \
     nlohmann-json3-dev \
-    libyaml-cpp-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Clone the repository and its nested submodules
+RUN git clone --recursive https://github.com/biojppm/rapidyaml.git && \
+    cd rapidyaml && \
+    mkdir build && cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DRYML_BUILD_TESTS=OFF .. && \
+    make -j$(nproc) && \
+    make install
 
 WORKDIR /workspace
 

@@ -82,15 +82,22 @@ inline std::vector<PathStep> parse_path(std::string_view path) {
 
 
 /**
- * Base class for reading 
+ * Base class for serialization and deserialization
  */
-class PantryReader {
+class Pantry {
     public:
         // Use the default destructor (defer to compiler)
         // and ensure concrete classes are cleaned up before the base class 
-        virtual ~PantryReader () = default;
+        virtual ~Pantry () = default;
 
+        /**
+         * Find the string value at the path provided.
+         */
         virtual std::optional<std::string> read_string(const std::vector<PathStep>& steps) = 0;
+
+        /**
+         * Find the int value at the path provided.
+         */
         virtual std::optional<int> read_int(const std::vector<PathStep>& steps) = 0;
 
 };
