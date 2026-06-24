@@ -3,7 +3,7 @@
 #include <ryml.hpp>
 
 /**
- * YAML Implementation of Pantry.
+ * Shared Base for Ryml-driven Pantry implementations.
  */
 class RymlPantry : public Pantry
 {
