@@ -1,8 +1,11 @@
 #pragma once
-#include "yaml_pantry.hpp"
+#include "ryml_pantry.hpp"
 
 /**
  * JSON Implementation of Pantry.
  */
-class JsonPantry : public YamlPantry {
+class JsonPantry : public RymlPantry {
+
+    public:
+        explicit JsonPantry(std::string_view raw) : RymlPantry(raw, RymlPantry::Format::JSON) {}
 };
