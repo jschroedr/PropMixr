@@ -7,13 +7,13 @@ TEST(JsonPantryTest, ExtractsValidPrimitives) {
 
     // Manually build path steps for "/app/env"
     std::vector<PathStep> string_path = {{"app", false}, {"env", false}};
-    auto env_val = pantry.read_string(string_path);
+    auto env_val = pantry.read<std::string>(string_path);
     ASSERT_TRUE(env_val.has_value());
     EXPECT_EQ(*env_val, "prod");
 
     // Manually build path steps for "/app/version"
     std::vector<PathStep> int_path = {{"app", false}, {"version", false}};
-    auto version_val = pantry.read_int(int_path);
+    auto version_val = pantry.read<int>(int_path);
     ASSERT_TRUE(version_val.has_value());
     EXPECT_EQ(*version_val, 2);
 }
@@ -23,7 +23,7 @@ TEST(JsonPantryTest, HandlesTypeMismatchesSafely) {
     JsonPantry pantry(raw_json);
 
     std::vector<PathStep> path = {{"age", false}};
-    auto val = pantry.read_int(path);
+    auto val = pantry.read<int>(path);
     
     // Should return nullopt instead of throwing a hard crash
     EXPECT_FALSE(val.has_value()); 

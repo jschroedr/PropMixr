@@ -1,6 +1,8 @@
 #pragma once
 #include "pantry.hpp"
 #include "json_pantry.hpp"
+#include "yaml_pantry.hpp"
+#include "xml_pantry.hpp"
 #include <meta>            // Standard C++26 Reflection header
 #include <memory>
 #include <type_traits>

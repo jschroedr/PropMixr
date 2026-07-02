@@ -12,7 +12,7 @@ class XmlPantry : public Pantry
         explicit XmlPantry(std::string_view raw) {
             pugi::xml_parse_result result = root.load_string(raw.data(), raw.size());
             if (result.status != pugi::xml_parse_status::status_ok) {
-                throw new std::invalid_argument("Invalid XML");
+                throw std::invalid_argument("Invalid XML");
             }
         }
 

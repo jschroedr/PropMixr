@@ -29,7 +29,6 @@ enum class DataFormat {
  */
 using MixerTypes = std::variant<std::string, int>;
 
-// TODO: need to understand this better
 // Metadata helper to check if the type live inside MixerTypes
 template <typename T, typename Variant>
 struct is_variant_member;
@@ -41,8 +40,10 @@ struct is_variant_member<T, std::variant<Args...>> : std::disjunction<std::is_sa
 template <typename T>
 concept IsAllowedMixerType = is_variant_member<T, MixerTypes>::value;
 
-// why are we using inline?
-
+/**
+ * Using inline here to bypass One Definition Rule
+ * (.cpp files that include this header file would redefine this function)
+ */
 inline std::vector<PathStep> parse_path(std::string_view path) {
     std::vector<PathStep> steps;
     
@@ -51,7 +52,7 @@ inline std::vector<PathStep> parse_path(std::string_view path) {
         return steps;
     }
 
-    size_t position;
+    size_t position = 0;
     while (position < path.size()) {
         // find the next slash in the path
         size_t next_slash = path.find('/', position);
@@ -102,9 +103,9 @@ class Pantry {
 
         template <IsAllowedMixerType T>
         std::optional<T> read(const std::vector<PathStep>& steps) {
-            if constexpr (std::is_same_v(T, int)) {
+            if constexpr (std::is_same_v<T, int>) {
                 return read_int(steps);
-            } else if constexpr (std::is_same_v(T, std::string)) {
+            } else if constexpr (std::is_same_v<T, std::string>) {
                 return read_string(steps);
             }
         }
