@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     git \
-    nlohmann-json3-dev \
+    libpugixml-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone the repository and its nested submodules

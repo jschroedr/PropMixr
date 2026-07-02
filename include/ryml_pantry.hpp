@@ -22,6 +22,10 @@ class RymlPantry : public Pantry
             }
         }
 
+    private:
+
+        ryml::Tree root;
+
         std::optional<std::string> read_string(const std::vector<PathStep>& steps) override {
             return navigate<std::string>(steps);
         }
@@ -29,10 +33,6 @@ class RymlPantry : public Pantry
         std::optional<int> read_int(const std::vector<PathStep>& steps) override {
             return navigate<int>(steps);
         }
-
-    private:
-
-        ryml::Tree root;
 
         /**
          * Crawl the YAML tree to the path provided.

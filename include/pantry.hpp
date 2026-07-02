@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <optional>
+#include <variant>
 
 
 /**
@@ -14,22 +15,31 @@ struct PathStep {
 };
 
 
+/** 
+ * Supported data formats
+ */
 enum class DataFormat {
     Json,
     Xml,
     Yaml
 };
 
-
-/**
- * Represents the direction of a PropertyMapping
+/** 
+ * The allowed types for PropMixer to serialize
  */
-// enum class Direction {
-//     INPUT,
-//     OUTPUT,
-//     INPUT_OUTPUT,
-// };
+using MixerTypes = std::variant<std::string, int>;
 
+// TODO: need to understand this better
+// Metadata helper to check if the type live inside MixerTypes
+template <typename T, typename Variant>
+struct is_variant_member;
+
+template <typename T, typename ... Args>
+struct is_variant_member<T, std::variant<Args...>> : std::disjunction<std::is_same<T, Args>...> {};
+
+// Restriction concept - ensure types used are only what we support
+template <typename T>
+concept IsAllowedMixerType = is_variant_member<T, MixerTypes>::value;
 
 // why are we using inline?
 
@@ -90,14 +100,18 @@ class Pantry {
         // and ensure concrete classes are cleaned up before the base class 
         virtual ~Pantry () = default;
 
-        /**
-         * Find the string value at the path provided.
-         */
-        virtual std::optional<std::string> read_string(const std::vector<PathStep>& steps) = 0;
+        template <IsAllowedMixerType T>
+        std::optional<T> read(const std::vector<PathStep>& steps) {
+            if constexpr (std::is_same_v(T, int)) {
+                return read_int(steps);
+            } else if constexpr (std::is_same_v(T, std::string)) {
+                return read_string(steps);
+            }
+        }
 
-        /**
-         * Find the int value at the path provided.
-         */
+    private:
+        // Support for all MixerTypes enforced here
         virtual std::optional<int> read_int(const std::vector<PathStep>& steps) = 0;
+        virtual std::optional<std::string> read_string(const std::vector<PathStep>& steps) = 0;
 
 };

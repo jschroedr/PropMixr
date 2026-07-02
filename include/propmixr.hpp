@@ -79,10 +79,13 @@ namespace PropMixr {
         
         if (format == DataFormat::Json) {
             pantry = std::make_unique<JsonPantry>(raw_data);
+        } else if (format == DataFormat::Yaml) {
+            pantry = std::make_unique<YamlPantry>(raw_data);
+        } else if (format == DataFormat::Xml) {
+            pantry = std::make_unique<XmlPantry>(raw_data);
         } else {
             throw std::runtime_error("Unsupported format engine backend.");
         }
-
         return detail::bake_internal<T>(*pantry, "");
     };
 }
