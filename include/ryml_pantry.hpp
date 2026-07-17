@@ -1,6 +1,7 @@
 #pragma once
 #include "pantry.hpp"
 #include <ryml.hpp>
+#include <ryml_std.hpp>   // std::string/std::string_view interop (to_csubstr, from_chars)
 
 /**
  * Shared Base for Ryml-driven Pantry implementations.
@@ -42,17 +43,22 @@ class RymlPantry : public Pantry
             ryml::NodeRef cursor = root.rootref();
             for (const auto& step : steps) {
                 cursor = cursor[ryml::to_csubstr(step.key)];
-                if (!cursor.valid()) {
+                // invalid() alone misses "seed" nodes: NodeRef::operator[]
+                // returns a seed placeholder (not invalid, but not readable)
+                // when the key doesn't exist yet. readable() catches both.
+                if (!cursor.readable()) {
                     return std::nullopt;
                 }
             }
             if (!cursor.has_val()) {
                 return std::nullopt;
             }
-            // ryml requires the stream extraction operator
+            // deserialize() reports failure via ReadResult instead of the
+            // error callback, keeping type-mismatch on the nullopt path.
             T value;
-            cursor >> value;
+            if (!cursor.deserialize(&value)) {
+                return std::nullopt;
+            }
             return value;
         }
-        
 };

@@ -23,3 +23,13 @@ TEST(PathParserTest, ReturnsEmptyOnInvalidPointer) {
     auto steps = parse_path("invalid/path");
     EXPECT_TRUE(steps.empty());
 }
+
+TEST(PathParserTest, ReturnsEmptyOnRootOnlyPointer) {
+    auto steps = parse_path("/");
+    EXPECT_TRUE(steps.empty());
+}
+
+TEST(PathParserTest, ReturnsEmptyOnEmptyString) {
+    auto steps = parse_path("");
+    EXPECT_TRUE(steps.empty());
+}

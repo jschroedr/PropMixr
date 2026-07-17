@@ -20,6 +20,6 @@ add_executable(run_tests
     tests/test_engine.cpp
 )
 
-target_link_libraries(run_tests gtest_main yaml-cpp)
+target_link_libraries(run_tests gtest_main ryml pugixml)
 include(GoogleTest)
 gtest_discover_tests(run_tests)

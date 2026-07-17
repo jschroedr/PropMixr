@@ -101,6 +101,9 @@ class Pantry {
         // and ensure concrete classes are cleaned up before the base class 
         virtual ~Pantry () = default;
 
+        /**
+         * Implementing the Non-Virtual Interface (NVI) idiom
+         */
         template <IsAllowedMixerType T>
         std::optional<T> read(const std::vector<PathStep>& steps) {
             if constexpr (std::is_same_v<T, int>) {
@@ -112,6 +115,9 @@ class Pantry {
 
     private:
         // Support for all MixerTypes enforced here
+        // Note: virtual dispatch ensures the concrete class is referenced via vtable lookup
+        // (Overriding is by signature, not by access)
+        // Side Note: "override" keyword ensures the compiler rejects non-matching signatures
         virtual std::optional<int> read_int(const std::vector<PathStep>& steps) = 0;
         virtual std::optional<std::string> read_string(const std::vector<PathStep>& steps) = 0;
 

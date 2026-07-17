@@ -21,21 +21,27 @@ class XmlPantry : public Pantry
         pugi::xml_document root;
 
         std::optional<std::string> read_string(const std::vector<PathStep>& steps) override {
-            pugi::xml_node node = navigate(steps);
-            return node.text().as_string();
+            std::optional<pugi::xml_node> node = navigate(steps);
+            if (node == std::nullopt) {
+                return std::nullopt;
+            }
+            return node->text().as_string();
         }
 
         std::optional<int> read_int(const std::vector<PathStep>& steps) override {
-            pugi::xml_node node = navigate(steps);
-            return node.text().as_int();
+            std::optional<pugi::xml_node> node = navigate(steps);
+            if (node == std::nullopt) {
+                return std::nullopt;
+            }
+            return node->text().as_int();
         }
 
-        pugi::xml_node navigate(const std::vector<PathStep> &steps) {
+        std::optional<pugi::xml_node> navigate(const std::vector<PathStep> &steps) {
             pugi::xml_node current = root;
             for (const auto& step : steps) {
                 current = current.child(step.key.c_str());
                 if (!current) {
-                    break;
+                    return std::nullopt;
                 }
             }
             return current;
